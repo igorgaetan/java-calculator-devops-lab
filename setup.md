@@ -1,112 +1,76 @@
+## 🎓 Guide de Formation : Setup Environnement DevOps (Java 21 / Sonar)
 
----
+Ce guide détaille l'installation d'un environnement DevOps moderne pour Java 21 sur Ubuntu.
 
-# 🎓 Guide de Formation : Setup Environnement DevOps (Java/Sonar)
-
-Ce guide permet de configurer un environnement complet pour builder, tester et analyser la qualité d'une application Java.
-
-## 📋 Prérequis (Instance EC2)
-* **OS :** Ubuntu 22.04 LTS ou 24.04 LTS.
-* **Type d'instance :** `t3.medium` recommandé (SonarQube nécessite au moins 4Go de RAM).
-* **Sécurité :** Ouvrir le port **9000** (SonarQube) et **80** (optionnel) dans le Security Group.
-
----
-
-## 1. Installation de Docker
-Indispensable pour faire tourner SonarQube sans polluer le système hôte.
-
+### 1. Préparation du système et dépendances
+On installe les outils de base et on s'assure que le système est à jour.
 ```bash
-# Mise à jour des dépôts
 sudo apt update && sudo apt upgrade -y
-
-# Installation des dépendances
-sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
-
-# Ajout de la clé GPG et du dépôt officiel Docker
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-# Installation de Docker
-sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io -y
-
-# Configuration post-installation (pour éviter 'sudo')
-sudo usermod -aG docker $USER
-newgrp docker
+sudo apt install git curl unzip -y
 ```
 
----
-
-## 2. Installation de Java (JDK 17)
-On utilise la version 17 LTS, standard actuel dans l'industrie.
-
+### 2. Installation de Java 21 (JDK)
+Nécessaire pour supporter les dernières fonctionnalités Java et les versions récentes de Gradle.
 ```bash
-sudo apt install openjdk-17-jdk -y
+sudo apt install openjdk-21-jdk -y
 
-# Configuration de la variable d'environnement JAVA_HOME
-echo 'export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"' >> ~/.bashrc
-source ~/.bashrc
+# Vérification
+java -version
 ```
 
----
-
-## 3. Installation des outils de Build (Maven & Gradle)
-
-### A. Maven
+### 3. Installation des outils de Build
+#### A. Maven
+La version fournie par `apt` est suffisante pour notre usage.
 ```bash
 sudo apt install maven -y
 ```
 
-### B. Gradle (Version 8.7)
+#### B. Gradle 8.7 (Installation Manuelle)
+**Important :** On évite `apt install gradle` car la version est trop ancienne pour Java 21.
 ```bash
 wget https://services.gradle.org/distributions/gradle-8.7-bin.zip
-sudo apt install unzip -y
 unzip gradle-8.7-bin.zip
 sudo mv gradle-8.7 /opt/gradle
+
+# Ajout au PATH
 echo 'export PATH=$PATH:/opt/gradle/bin' >> ~/.bashrc
 source ~/.bashrc
+
+# Vérification
+gradle -v
 ```
 
----
-
-## 4. Lancement de SonarQube
-On utilise Docker pour déployer le serveur d'analyse en une seule ligne.
-
+### 4. Installation de Docker & SonarQube
+Docker permet d'isoler le serveur SonarQube.
 ```bash
-# Lancement du conteneur
+# Installation de Docker
+sudo apt install docker.io -y
+sudo usermod -aG docker $USER
+# /!\ Déconnectez-vous et reconnectez-vous ici pour appliquer les droits
+
+# Lancement de SonarQube
 docker run -d --name sonarqube -p 9000:9000 sonarqube:lts-community
 ```
-> **Note :** Attendez environ 60 secondes. Accédez ensuite à `http://votre-ip-ec2:9000`. 
-> *(Login par défaut : admin / admin(or password). Vous devrez changer le mot de passe à la première connexion).*
 
----
-
-## 5. Exécution du Projet
-
-### Option 1 : Avec Maven
+### 5. Exécution et Analyse du Projet
+Clonez d'abord le projet :
 ```bash
-# Compiler et lancer les tests unitaires + couverture JaCoCo
-mvn clean test
+git clone https://github.com/igorgaetan/java-calculator-devops-lab.git
+cd java-calculator-devops-lab
+```
 
-# Envoyer l'analyse vers SonarQube
-# Remplacez par votre token généré dans l'interface Sonar
+#### Option Maven
+```bash
+# Test et couverture
+mvn clean test
+# Analyse (Utilisez votre Token généré sur l'interface Sonar)
 mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=VOTRE_PASS
 ```
 
-### Option 2 : Avec Gradle
+#### Option Gradle
 ```bash
-# Builder et générer le rapport de couverture
+# Build et couverture
 gradle clean build jacocoTestReport
-
-# Envoyer l'analyse vers SonarQube
+# Analyse
 gradle sonar -Dsonar.login=TON_TOKEN
 ```
-
----
-
-## 📊 Interprétation des Résultats
-
-Une fois les commandes terminées, retournez sur l'interface SonarQube :
-1. **Quality Gate :** Si c'est au "Vert", le code respecte les standards.
-2. **Coverage :** Indique le % de code testé par `CalculatorTest.java`.
-3. **Bugs & Vulnerabilities :** Liste les failles de sécurité potentielles.
-4. **Technical Debt :** Temps estimé pour corriger les "Code Smells".
