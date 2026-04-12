@@ -1,0 +1,15 @@
+# Java
+*.class
+
+# Maven
+target/
+
+# Gradle
+.gradle/
+build/
+
+# Sonar
+.sonar/
+
+# OS
+.DS_Store
