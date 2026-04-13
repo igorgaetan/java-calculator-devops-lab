@@ -49,7 +49,7 @@ sudo usermod -aG docker $USER
 # /!\ Déconnectez-vous et reconnectez-vous ici pour appliquer les droits
 
 # Lancement de SonarQube
-docker run -d --name sonarqube -p 9000:9000 sonarqube:lts-community
+sudo docker run -d --name sonarqube -p 9000:9000 sonarqube:lts-community
 ```
 
 ### 5. Exécution et Analyse du Projet
