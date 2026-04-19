@@ -49,8 +49,28 @@ sudo usermod -aG docker $USER
 # /!\ Déconnectez-vous et reconnectez-vous ici pour appliquer les droits
 
 # Lancement de SonarQube
-sudo docker run -d --name sonarqube -p 9000:9000 sonarqube:lts-community
+sudo docker run -d \
+  --name sonarqube \
+  -p 9000:9000 \
+  --restart always \
+  -v sonarqube-data:/opt/sonarqube/data \
+  -v sonarqube-extensions:/opt/sonarqube/extensions \
+  -v sonarqube-logs:/opt/sonarqube/logs \
+  sonarqube:lts-community
+
+sudo docker run -d \
+  --name nexus \
+  -p 8081:8081 \
+  --restart always \
+  -v nexus-data:/nexus-data \
+  sonatype/nexus3
 ```
+
+
+sudo docker exec nexus \
+  cat /nexus-data/admin.password
+
+  
 
 ### 5. Exécution et Analyse du Projet
 Clonez d'abord le projet :
