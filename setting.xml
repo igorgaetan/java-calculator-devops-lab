@@ -1,0 +1,17 @@
+mkdir -p ~/.m2
+cat << EOF > ~/.m2/settings.xml
+<settings>
+  <servers>
+    <server>
+      <id>nexus-snapshots</id>
+      <username>nexus-boot</username>
+      <password>password</password>
+    </server>
+    <server>
+      <id>nexus-releases</id>
+      <username>nexus-boot</username>
+      <password>password</password>
+    </server>
+  </servers>
+</settings>
+EOF
