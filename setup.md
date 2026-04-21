@@ -57,7 +57,7 @@ sudo usermod -aG docker $USER
 
 ### 2. Lancement de SonarQube
 ```bash
-docker run -d \
+sudo docker run -d \
   --name sonarqube \
   -p 9000:9000 \
   --restart always \
@@ -68,7 +68,7 @@ docker run -d \
 
 ### 3. Lancement de Nexus
 ```bash
-docker run -d \
+sudo docker run -d \
   --name nexus \
   -p 8081:8081 \
   --restart always \
@@ -79,7 +79,7 @@ docker run -d \
 
 **Récupérer le mot de passe admin initial :**
 ```bash
-docker exec nexus cat /nexus-data/admin.password
+sudo docker exec nexus sh -c "cat /nexus-data/admin.password"
 ```
 
 ---
