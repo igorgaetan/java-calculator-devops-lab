@@ -64,6 +64,8 @@ sudo docker run -d \
   -v sonarqube-data:/opt/sonarqube/data \
   sonarqube:lts-community
 ```
+
+
 👉 Accès : `http://<SERVER_IP>:9000`
 
 ### 3. Lancement de Nexus
