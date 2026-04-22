@@ -6,14 +6,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.devops</groupId>
   <artifactId>calculator</artifactId>
-  <version>1.0.0</version>
+  <version>3.2.2-SNAPSHOTS</version>
   <packaging>jar</packaging>
 
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <sonar.projectKey>java-sonar-project</sonar.projectKey>
-    <sonar.host.url>http://51.21.171.250:9000</sonar.host.url>
+    <sonar.host.url>http://16.171.4.217:9000</sonar.host.url>
   </properties>
 
   <dependencies>
@@ -28,11 +28,11 @@
   <distributionManagement>
         <snapshotRepository>
           <id>nexus-snapshots</id>
-          <url>http://51.21.171.250:8081/repository/maven-snapshots/</url>
+          <url>http://16.171.4.217:8081/repository/maven-snapshots/</url>
         </snapshotRepository>
         <repository>
           <id>nexus-releases</id>
-          <url>http://51.21.171.250:8081/repository/maven-releases/</url>
+          <url>http://16.171.4.217:8081/repository/maven-releases/</url>
         </repository>
   </distributionManagement>
 
